@@ -1,3 +1,4 @@
-ng add angular-cli-ghpages@latest
+# angular githubio
+# ng add angular-cli-ghpages@latest
 
-ng deploy myPage --base-href=/Portfolio/
+ng deploy  --base-href=/
