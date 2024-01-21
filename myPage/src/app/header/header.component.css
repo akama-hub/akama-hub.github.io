@@ -1,0 +1,139 @@
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 50px;
+    z-index: 1;
+    /* opacity: 90%; */
+    background-color: #222222;
+    display: flex;
+    /* border-radius:10px; */
+}
+
+.header h1 {
+    color: bisque;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 25px;
+    padding: 10px 0 10px 5vw;
+    width: 100%;
+}
+
+.hamburger-menu {
+    /* padding-right: 20px; */
+    position: relative;
+}
+
+.menu-btn {
+    /* 親要素（ハンバーガー）に対して固定位置 */
+    padding-right: 30px;
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    height: 35px;
+    width: 40px;
+    /* 中央揃え */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+/* 疑似要素 */
+.menu-btn span, .menu-btn span::before, .menu-btn span::after {
+    /* 中身を入れ替える。この場合はチェックボックスを空にする */
+    content: "";
+    display: block;
+    height: 3px;
+    width: 25px;
+    /* 先端を丸める */
+    border-radius: 3px;
+    background-color: bisque;
+    position: absolute;
+}
+
+/* 三本戦の一番下の線 */
+.menu-btn span::before {
+    bottom: 8px
+}
+
+/* 三本戦の一番上の線 */
+.menu-btn span::after {
+    top: 8px
+}
+
+/* idの時は#をつける */
+#menu-btn-check:checked + .menu-btn span {
+    background-color: rgba(255, 255, 255, 0);
+    top: 7px;
+}
+
+#menu-btn-check:checked + .menu-btn span::before {
+    top: 7.5px;
+    -webkit-transition: .3s;
+        transition: .3s;
+    -webkit-transform: rotateZ(45deg);
+          transform: rotateZ(45deg);
+}
+
+#menu-btn-check:checked + .menu-btn span::after {
+    bottom: 7.5px;
+    -webkit-transition: .3s;
+        transition: .3s;
+    -webkit-transform: rotateZ(-45deg);
+        transform: rotateZ(-45deg);
+}
+
+#menu-btn-check {
+    display: none;
+}
+
+.menu-content {
+    width: 80%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 100%;
+    z-index: 4;
+    background-color: rgb(90, 105, 48);
+}
+
+
+#menu-btn-check:checked ~ .menu-content {
+    left: 50%;
+}
+
+@media screen and (max-width: 650px)  {
+    #menu-btn-check:checked ~ .menu-content {
+        left: 30%;
+    }
+}
+
+.menu-content ul {
+    padding-top:  50px;
+}
+
+.menu-content ul li {
+    list-style: none;
+}
+
+.menu-content ul li a {
+    display: block;
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+    box-sizing: border-box;
+    color: bisque;
+    text-decoration: none;
+    padding: 3px 0 5px 0px;
+    padding-left: 10%;
+}
+
+.menu-content ul li a:hover {
+    background-color: black;
+}
+
+#menu-btn-check:checked ~ .menu-content ul li a:hover {
+    left: 0;
+}

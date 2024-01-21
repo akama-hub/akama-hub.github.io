@@ -1,0 +1,9 @@
+.footer {
+    height: 200px;
+    background-color: black;
+    color: bisque;
+    text-align: right;
+    padding-right: 75px;
+    padding-top: 75px;
+    font-family: 'Noto Serif JP', serif;
+}
