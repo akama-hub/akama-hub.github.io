@@ -12,6 +12,7 @@ type Location = {
   lon: number;
   description: string;
   image: string;
+  anywhere?: boolean; // true なら位置判定なし
 };
 const BASE_PATH = nextConfig.basePath || "";
 const LOCATIONS: Location[] = [
@@ -54,6 +55,15 @@ const LOCATIONS: Location[] = [
     description: "広大な敷地を持つ都市公園です。",
     image: `${BASE_PATH}/images/tsurumi.jpg`,
   },
+  {
+    id: 99,
+    name: "フリースタンプ",
+    lat: 0, // 何でも良い
+    lon: 0,
+    anywhere: true,
+    description: "場所に関係なく獲得できる初回ログインスタンプです。",
+    image: `${BASE_PATH}/images/park.jpg`,
+  },
 ];
 
 /* ────────── Animation helpers ────────── */
@@ -89,6 +99,7 @@ export default function StampRally() {
   const [error, setError] = useState("");
   const confetti = useAnimation(); // 祝賀アニメ
   const progress = (stamps.length / LOCATIONS.length) * 100;
+  const [lastCollected, setLastCollected] = useState<number | null>(null);
 
   /* ── 初期読込 & 位置ウォッチ ── */
   useEffect(() => {
@@ -120,21 +131,29 @@ export default function StampRally() {
 
   /* ── 位置に近づいたらスタンプ ── */
   const tryCollect = (id: number) => {
-    if (!pos) return setError("現在地を取得できていません");
     const loc = LOCATIONS.find((l) => l.id === id)!;
+    if (loc.anywhere) {
+      collect(id);
+      return;
+    }
+    if (!pos) return setError("現在地を取得できていません");
     const d = distanceM(
       pos.coords.latitude,
       pos.coords.longitude,
       loc.lat,
       loc.lon
     );
-    if (d <= 200) {
-      if (!stamps.includes(id)) {
-        const newStamps = [...stamps, id];
-        setStamps(newStamps);
-        localStorage.setItem("collectedStamps", JSON.stringify(newStamps));
-      }
-    } else setError("スポットまで近づいてください（200m以内）");
+    if (d <= 200) collect(id);
+    else setError("スポットまで近づいてください（200m以内）");
+  };
+
+  const collect = (id: number) => {
+    if (!stamps.includes(id)) {
+      const newStamps = [...stamps, id];
+      setStamps(newStamps);
+      setLastCollected(id);
+      localStorage.setItem("collectedStamps", JSON.stringify(newStamps));
+    }
   };
 
   /* ── JSX ── */
@@ -177,6 +196,7 @@ export default function StampRally() {
         >
           {LOCATIONS.map((l, idx) => {
             const collected = stamps.includes(l.id);
+            const isAnywhere = l.anywhere;
             const d =
               pos &&
               Math.round(
@@ -187,7 +207,7 @@ export default function StampRally() {
                   l.lon
                 )
               );
-            const near = d !== null && d <= 200;
+            const near = isAnywhere || (d !== null && d <= 200);
 
             return (
               <motion.article
@@ -212,7 +232,7 @@ export default function StampRally() {
                   </p>
 
                   {/* distance badge */}
-                  {pos && (
+                  {!isAnywhere && d !== null && (
                     <span
                       className={`inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full ${
                         near
@@ -269,6 +289,60 @@ export default function StampRally() {
             className="pointer-events-none fixed inset-0 z-50 bg-[radial-gradient(circle_at_center,theme(colors.yellow.400)_0%,transparent_70%)]"
           />
         )}
+      </motion.div>
+
+      <motion.div
+        variants={fadeUp(0.35)}
+        className="mt-16 flex flex-col items-center"
+      >
+        <h3 className="font-semibold mb-3 text-center">スタンプボード</h3>
+
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-6">
+          {LOCATIONS.map((l) => {
+            const collected = stamps.includes(l.id);
+            const isNew = lastCollected === l.id; // ★今押したスタンプだけ演出
+
+            return (
+              <motion.div
+                key={l.id}
+                initial={false}
+                animate={
+                  collected
+                    ? isNew
+                      ? {
+                          scale: [0, 1.6, 1],
+                          rotate: [-30, 0],
+                          opacity: [0, 1, 1],
+                        }
+                      : { scale: 1, opacity: 1 }
+                    : { scale: 1, opacity: 0.25 }
+                }
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                className={`relative w-20 h-20 rounded-full border-4 ${
+                  collected
+                    ? "border-emerald-500/70 shadow-lg"
+                    : "border-dashed border-gray-400"
+                } overflow-hidden bg-white/70`}
+              >
+                {collected && (
+                  <Image
+                    src={l.image}
+                    alt={l.name}
+                    fill
+                    sizes="80px"
+                    className="object-cover"
+                  />
+                )}
+                {!collected && (
+                  <span className="absolute inset-0 grid place-items-center text-[10px] leading-snug text-gray-500">
+                    未<br />
+                    獲得
+                  </span>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
       </motion.div>
 
       {/* 現在地リクエスト (モバイルで押しやすい) */}
