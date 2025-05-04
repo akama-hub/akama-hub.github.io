@@ -1,0 +1,73 @@
+{
+  "name": "Portfolio",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/app",
+  "features": {
+    "docker-from-docker": {
+      "version": "latest"
+    }
+  }, // 必要ない場合は削除
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[postcss]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[css]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ],
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true,
+          "source.organizeImports": true
+        },
+        "javascript.format.enable": false,
+        "typescript.format.enable": false,
+        "terminal.integrated.defaultProfile.linux": "fish",
+        "dev.containers.copyGitConfig": true,
+        "dev.containers.gitCredentialHelperConfigLocation": "none"
+      },
+      "extensions": [
+        "ms-ceintl.vscode-language-pack-ja",
+        "donjayamanne.githistory",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "github.vscode-pull-request-github",
+        "github.vscode-github-actions",
+        "DavidAnson.vscode-markdownlint",
+        "ms-azuretools.vscode-docker",
+        "github.copilot",
+        "github.copilot-chat",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "formulahendry.auto-rename-tag",
+        "bradlc.vscode-tailwindcss",
+        "wayou.vscode-todo-highlight"
+      ]
+    }
+  },
+  "remoteUser": "root",
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh; fish"
+}

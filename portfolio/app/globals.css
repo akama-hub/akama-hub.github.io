@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/* ── 基本文字サイズを 1rem=16px に固定しつつ流動的スケール ── */
+html {
+  font-feature-settings: "liga", "kern";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 見出し：可変フォントの optical-size を活かす（Inter 対応軸） */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--font-inter), var(--font-noto), Libre Baskerville,
+    sans-serif;
+  font-variation-settings: "opsz" 32;
+}
+
+/* 数値をそろえて UI がブレないように */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Brand Accent (RGB 変数) ─── */
+:root {
+  --accent: 99 102 241;
+  --font-inter: "Inter";
+  --font-noto: "Noto Sans JP";
+} /* indigo */
+:root[data-theme="emerald"] {
+  --accent: 16 185 129;
+}
+:root[data-theme="rose"] {
+  --accent: 244 63 94;
+}
+
+/* ─── Utility shortcuts ─── */
+.btn-accent {
+  background: rgb(var(--accent) / 1);
+  color: #fff;
+  @apply rounded-full px-7 py-3 font-semibold shadow-lg hover:opacity-90;
+}
+.text-accent {
+  color: rgb(var(--accent) / 1);
+}
+
+/* 例：半透明オーバーレイ用 */
+.bg-accent-50 {
+  background: rgb(var(--accent) / 0.5);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .container {
+    @apply mx-auto px-4;
+    max-width: 1280px;
+  }
+}
